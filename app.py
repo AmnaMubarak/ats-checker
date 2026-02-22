@@ -160,17 +160,63 @@ def check_contact_info(text, text_lower):
     score = 0
     max_score = 12
 
-    email_match = re.search(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}", text)
-    phone_match = re.search(r"[\+]?[\d\s\-\(\)]{7,15}", text)
-    linkedin_match = re.search(r"linkedin\.com/in/[\w\-]+", text, re.IGNORECASE)
-    github_match = re.search(r"github\.com/[\w\-]+", text, re.IGNORECASE)
-    location_match = re.search(r"\b(?:city|state|country|zip|located in|based in|remote)\b", text_lower) or \
-                     re.search(r"\b[A-Z][a-z]+,\s*[A-Z]{2}\b", text)
-    website_match = re.search(r"(?:portfolio|website|http|www\.)\S+", text, re.IGNORECASE)
+    # PDFs often extract text with extra spaces, broken URLs, or missing dots.
+    # Collapse whitespace for URL detection while keeping original for other checks.
+    text_collapsed = re.sub(r"\s+", " ", text)
+    text_no_spaces = re.sub(r"\s+", "", text_lower)
 
+    # --- Email ---
+    email_match = re.search(r"[a-zA-Z0-9._%+\-]+\s*@\s*[a-zA-Z0-9.\-]+\.\s*[a-zA-Z]{2,}", text)
+    if not email_match:
+        email_match = re.search(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}", text_collapsed)
+
+    # --- Phone ---
+    phone_match = re.search(r"[\+]?[\d\s\-\(\)]{7,15}", text)
+
+    # --- LinkedIn: handle PDF extraction quirks ---
+    linkedin_match = (
+        re.search(r"linkedin\.com/in/[\w\-]+", text, re.IGNORECASE) or
+        re.search(r"linkedin\s*\.\s*com\s*/\s*in\s*/\s*[\w\-]+", text, re.IGNORECASE) or
+        re.search(r"linkedin\.com/in/[\w\-]+", text_collapsed, re.IGNORECASE) or
+        re.search(r"linkedin\.?com/?in/?[\w\-]+", text_no_spaces) or
+        re.search(r"\blinkedin\b", text_lower)
+    )
+    linkedin_is_keyword_only = (
+        not re.search(r"linkedin\.com/in/[\w\-]+", text_collapsed, re.IGNORECASE)
+        and re.search(r"\blinkedin\b", text_lower)
+    )
+
+    # --- GitHub: handle PDF extraction quirks ---
+    github_match = (
+        re.search(r"github\.com/[\w\-]+", text, re.IGNORECASE) or
+        re.search(r"github\s*\.\s*com\s*/\s*[\w\-]+", text, re.IGNORECASE) or
+        re.search(r"github\.com/[\w\-]+", text_collapsed, re.IGNORECASE) or
+        re.search(r"github\.?com/?[\w\-]+", text_no_spaces) or
+        re.search(r"\bgithub\b", text_lower)
+    )
+    github_is_keyword_only = (
+        not re.search(r"github\.com/[\w\-]+", text_collapsed, re.IGNORECASE)
+        and re.search(r"\bgithub\b", text_lower)
+    )
+
+    # --- Website / Portfolio ---
+    website_match = (
+        re.search(r"(?:portfolio|website|http|www\.)\S+", text, re.IGNORECASE) or
+        re.search(r"(?:portfolio|website|http|www\.)\S+", text_collapsed, re.IGNORECASE) or
+        re.search(r"\b(?:portfolio|website)\b", text_lower)
+    )
+
+    # --- Location ---
+    location_match = (
+        re.search(r"\b(?:city|state|country|zip|located in|based in|remote|hybrid)\b", text_lower) or
+        re.search(r"\b[A-Z][a-z]+,\s*[A-Z]{2}\b", text) or
+        re.search(r"\b[A-Z][a-z]+,\s*[A-Z][a-z]+\b", text)
+    )
+
+    # --- Score: Email ---
     if email_match:
         score += 3
-        email_addr = email_match.group().lower()
+        email_addr = re.sub(r"\s+", "", email_match.group()).lower()
         domain = email_addr.split("@")[1] if "@" in email_addr else ""
         local = email_addr.split("@")[0] if "@" in email_addr else ""
 
@@ -183,23 +229,34 @@ def check_contact_info(text, text_lower):
     else:
         findings.append({"type": "fail", "message": "No email address found — this is critical for ATS systems to contact you"})
 
+    # --- Score: Phone ---
     if phone_match:
         score += 3
         findings.append({"type": "pass", "message": "Phone number detected"})
     else:
         findings.append({"type": "fail", "message": "No phone number found — recruiters need a way to call you"})
 
+    # --- Score: LinkedIn ---
     if linkedin_match:
         score += 2
-        findings.append({"type": "pass", "message": f"LinkedIn profile: {linkedin_match.group()}"})
+        if linkedin_is_keyword_only:
+            findings.append({"type": "pass", "message": "LinkedIn reference found (URL may be hyperlinked in original — PDF extraction can break links)"})
+        else:
+            findings.append({"type": "pass", "message": "LinkedIn profile URL detected"})
     else:
         score += 0.5
         findings.append({"type": "warning", "message": "No LinkedIn URL — 87% of recruiters use LinkedIn; add your profile link"})
 
-    if github_match or website_match:
+    # --- Score: GitHub / Portfolio ---
+    if github_match:
         score += 2
-        label = "GitHub" if github_match else "Portfolio/Website"
-        findings.append({"type": "pass", "message": f"{label} link detected — great for showcasing your work"})
+        if github_is_keyword_only:
+            findings.append({"type": "pass", "message": "GitHub reference found (URL may be hyperlinked in original — PDF extraction can break links)"})
+        else:
+            findings.append({"type": "pass", "message": "GitHub profile URL detected"})
+    elif website_match:
+        score += 2
+        findings.append({"type": "pass", "message": "Portfolio/Website link detected"})
     else:
         score += 0.5
         findings.append({"type": "info", "message": "No portfolio/GitHub link — consider adding one to stand out"})
@@ -506,45 +563,195 @@ def check_hard_skills(text_lower):
     return round(min(score, max_score), 1), max_score, findings
 
 
-def check_soft_skills(text_lower):
+def check_work_experience(text, text_lower):
     findings = []
     score = 0
-    max_score = 8
+    max_score = 12
 
-    found_by_category = {}
-    total_found = []
+    MONTH = r"(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)"
+    YEAR = r"(?:19|20)\d{2}"
 
-    for cat, skills in SOFT_SKILLS.items():
-        matched = [s for s in skills if s.lower() in text_lower]
-        if matched:
-            found_by_category[cat] = matched
-            total_found.extend(matched)
+    # --- Date ranges (e.g. "Jan 2020 – Mar 2023", "2019 - 2021", "Aug 2022 – Present") ---
+    full_ranges = re.findall(
+        rf"{MONTH}\.?\s*{YEAR}\s*[–\-—to]+\s*(?:{MONTH}\.?\s*{YEAR}|present|current|now|ongoing)",
+        text, re.IGNORECASE)
+    year_only_ranges = re.findall(
+        rf"\b{YEAR}\s*[–\-—to]+\s*(?:{YEAR}|present|current|now|ongoing)\b",
+        text, re.IGNORECASE)
+    all_ranges = full_ranges + year_only_ranges
 
-    skill_count = len(total_found)
-    cat_count = len(found_by_category)
-
-    if skill_count >= 8:
-        score = 8
-        findings.append({"type": "pass", "message": f"Comprehensive soft skill coverage — {skill_count} skills across {cat_count} categories"})
-    elif skill_count >= 5:
-        score = 6
-        findings.append({"type": "pass", "message": f"Good soft skill mix — {skill_count} interpersonal/management skills detected"})
-    elif skill_count >= 3:
-        score = 4
-        findings.append({"type": "warning", "message": f"Some soft skills found ({skill_count}) — balance technical skills with soft skills"})
-    elif skill_count >= 1:
-        score = 2
-        findings.append({"type": "warning", "message": f"Only {skill_count} soft skill(s) — employers value communication, leadership, and teamwork"})
+    if len(full_ranges) >= 2:
+        score += 3
+        findings.append({"type": "pass", "message": f"{len(full_ranges)} proper date ranges found (Month Year – Month Year) — ideal for ATS"})
+    elif len(all_ranges) >= 2:
+        score += 2
+        findings.append({"type": "warning", "message": f"{len(all_ranges)} date range(s) found but missing month names — use 'Jan 2022 – Mar 2024' format"})
+    elif len(all_ranges) == 1:
+        score += 1
+        findings.append({"type": "warning", "message": "Only 1 date range found — add start/end dates for every position"})
     else:
-        findings.append({"type": "fail", "message": "No soft skills detected — add skills like leadership, communication, problem solving"})
+        findings.append({"type": "fail", "message": "No employment date ranges detected — ATS needs dates to build your work timeline"})
 
-    for cat, skills in found_by_category.items():
-        findings.append({"type": "info", "message": f"{cat}: {', '.join(skills)}"})
+    # --- Years & career span ---
+    year_mentions = re.findall(rf"\b({YEAR})\b", text)
+    unique_years = sorted(set(year_mentions))
+    if len(unique_years) >= 3:
+        span = int(unique_years[-1]) - int(unique_years[0])
+        score += 1.5
+        findings.append({"type": "pass", "message": f"Career spans {span} years ({unique_years[0]}–{unique_years[-1]})"})
+    elif len(unique_years) >= 1:
+        score += 0.5
+        findings.append({"type": "info", "message": f"Year(s) found: {', '.join(unique_years)}"})
 
-    if "Leadership" not in found_by_category:
-        findings.append({"type": "warning", "message": "Tip: Add leadership keywords — even individual contributors demonstrate leadership"})
-    if "Communication" not in found_by_category:
-        findings.append({"type": "warning", "message": "Tip: Mention communication skills — top-ranked soft skill by employers"})
+    # --- Job titles ---
+    title_keywords = re.findall(
+        r"\b(?:software engineer|web developer|data scientist|product manager|project manager|"
+        r"frontend developer|backend developer|full[- ]stack developer|devops engineer|"
+        r"ui/?ux designer|graphic designer|business analyst|data analyst|data engineer|"
+        r"machine learning engineer|cloud engineer|qa engineer|systems engineer|"
+        r"marketing manager|sales manager|operations manager|hr manager|"
+        r"cto|ceo|cfo|coo|vp of|vice president|director|team lead|tech lead|"
+        r"engineer|developer|designer|manager|analyst|consultant|coordinator|"
+        r"specialist|administrator|architect|intern|associate|senior|junior|"
+        r"principal|staff|head of)\b",
+        text, re.IGNORECASE)
+    unique_titles = list(set(t.lower().strip() for t in title_keywords))
+
+    if len(unique_titles) >= 3:
+        score += 3
+        findings.append({"type": "pass", "message": f"Clear job titles detected ({len(unique_titles)}): {', '.join(unique_titles[:6])}"})
+    elif len(unique_titles) >= 1:
+        score += 1.5
+        findings.append({"type": "warning", "message": f"Job title(s) found: {', '.join(unique_titles[:4])} — ensure each position has a clear title"})
+    else:
+        findings.append({"type": "fail", "message": "No recognizable job titles — use standard titles like 'Software Engineer', 'Project Manager'"})
+
+    # --- Company names ---
+    company_suffixes = re.findall(
+        r"\b\w[\w\s&]{1,30}(?:Inc\.?|LLC|Ltd\.?|Corp\.?|Corporation|Company|Co\.|"
+        r"Technologies|Solutions|Services|Group|Labs|Studio|Consulting|Partners|"
+        r"Enterprises|Systems|Software|Digital|Media|Agency|Foundation|Institute)\b",
+        text, re.IGNORECASE)
+    unique_companies = list(set(c.strip() for c in company_suffixes))
+
+    if len(unique_companies) >= 2:
+        score += 2.5
+        names = [c[:40] for c in unique_companies[:5]]
+        findings.append({"type": "pass", "message": f"Companies identified ({len(unique_companies)}): {', '.join(names)}"})
+    elif len(unique_companies) == 1:
+        score += 1.5
+        findings.append({"type": "warning", "message": f"1 company found: {unique_companies[0][:40]} — make sure all employers are clearly listed"})
+    else:
+        score += 0.5
+        findings.append({"type": "warning", "message": "No clear company names detected — list full company names (e.g., 'Google LLC', 'Acme Technologies')"})
+
+    # --- Present / current role ---
+    has_current = bool(re.search(r"\b(?:present|current|ongoing|now)\b", text, re.IGNORECASE))
+    if has_current:
+        score += 1
+        findings.append({"type": "pass", "message": "Current position indicated ('Present') — ATS understands you're currently employed"})
+    else:
+        score += 0.5
+        findings.append({"type": "info", "message": "No 'Present' date found — if currently employed, mark your latest role as '... – Present'"})
+
+    # --- Location ---
+    location_pattern = re.findall(r"\b[A-Z][a-z]+,\s*[A-Z]{2}\b|\b(?:remote|hybrid|on-?site)\b", text, re.IGNORECASE)
+    if location_pattern:
+        score += 0.5
+        findings.append({"type": "pass", "message": f"Work location(s) detected: {', '.join(set(l.strip() for l in location_pattern[:4]))}"})
+
+    return round(min(score, max_score), 1), max_score, findings
+
+
+def check_education(text, text_lower):
+    findings = []
+    score = 0
+    max_score = 10
+
+    # --- Degree type ---
+    degree_patterns = {
+        "Doctorate/PhD": r"\b(?:ph\.?d\.?|doctorate|doctor of)\b",
+        "Master's": r"\b(?:master(?:'?s)?|m\.?s\.?|m\.?a\.?|msc|mba|m\.?eng\.?|m\.?tech\.?)\b",
+        "Bachelor's": r"\b(?:bachelor(?:'?s)?|b\.?s\.?|b\.?a\.?|bsc|b\.?eng\.?|b\.?tech\.?)\b",
+        "Associate's": r"\b(?:associate(?:'?s)?|a\.?s\.?|a\.?a\.?)\b",
+        "Diploma": r"\b(?:diploma|certificate|certification)\b",
+    }
+
+    found_degrees = []
+    for deg_name, pattern in degree_patterns.items():
+        if re.search(pattern, text, re.IGNORECASE):
+            found_degrees.append(deg_name)
+
+    if found_degrees:
+        score += 3
+        findings.append({"type": "pass", "message": f"Degree level detected: {', '.join(found_degrees)}"})
+    else:
+        findings.append({"type": "fail", "message": "No degree type found — specify your degree (e.g., Bachelor of Science, Master of Arts, MBA)"})
+
+    # --- Field of study ---
+    fields = re.findall(
+        r"\b(?:computer science|information technology|software engineering|"
+        r"electrical engineering|mechanical engineering|civil engineering|"
+        r"data science|mathematics|statistics|physics|chemistry|biology|"
+        r"business administration|finance|accounting|economics|marketing|"
+        r"communications|psychology|political science|english|history|"
+        r"graphic design|information systems|cybersecurity|"
+        r"artificial intelligence|machine learning)\b",
+        text, re.IGNORECASE)
+    unique_fields = list(set(f.lower() for f in fields))
+
+    if unique_fields:
+        score += 2
+        findings.append({"type": "pass", "message": f"Field of study: {', '.join(unique_fields[:3])}"})
+    else:
+        score += 0.5
+        findings.append({"type": "warning", "message": "No field of study detected — include your major (e.g., 'BS in Computer Science')"})
+
+    # --- University / institution name ---
+    uni_keywords = re.findall(
+        r"\b(?:university|college|institute|school|academy|polytechnic)\s+(?:of\s+)?[A-Z][\w\s,]{2,40}",
+        text, re.IGNORECASE)
+    named_unis = re.findall(
+        r"\b(?:MIT|Stanford|Harvard|Oxford|Cambridge|Berkeley|UCLA|NYU|Georgia Tech|"
+        r"Carnegie Mellon|Caltech|Princeton|Yale|Columbia|Cornell|UPenn|"
+        r"IIT|LUMS|NUST|FAST|COMSATS|NED|UET|GIKI|PIEAS)\b",
+        text, re.IGNORECASE)
+    all_unis = list(set([u.strip()[:50] for u in uni_keywords] + [u.strip() for u in named_unis]))
+
+    if all_unis:
+        score += 2
+        findings.append({"type": "pass", "message": f"Institution(s): {', '.join(all_unis[:3])}"})
+    else:
+        score += 0.5
+        findings.append({"type": "warning", "message": "No institution name detected — include your university or college name"})
+
+    # --- Graduation year ---
+    edu_section = ""
+    edu_start = re.search(r"\b(?:education|academic|qualification)\b", text_lower)
+    if edu_start:
+        edu_section = text[edu_start.start():edu_start.start() + 800]
+
+    grad_years = re.findall(r"\b(20\d{2}|19\d{2})\b", edu_section if edu_section else text[-600:])
+    if grad_years:
+        score += 1.5
+        findings.append({"type": "pass", "message": f"Education year(s): {', '.join(sorted(set(grad_years)))}"})
+    else:
+        findings.append({"type": "warning", "message": "No graduation year found in education section — add your graduation year or expected graduation"})
+
+    # --- GPA / honors ---
+    gpa_match = re.search(r"\b(?:gpa|cgpa|grade)[:\s]*(\d+\.?\d*)\s*/?\s*(\d+\.?\d*)?\b", text, re.IGNORECASE)
+    honors = re.findall(r"\b(?:cum laude|magna cum laude|summa cum laude|dean'?s list|honor(?:s|'s)?\s*(?:roll|society)?|distinction|first class|second class|merit)\b", text, re.IGNORECASE)
+
+    if gpa_match:
+        gpa_str = gpa_match.group(0).strip()
+        score += 1
+        findings.append({"type": "pass", "message": f"GPA listed: {gpa_str}"})
+    elif honors:
+        score += 1
+        findings.append({"type": "pass", "message": f"Academic honors: {', '.join(set(h.lower() for h in honors))}"})
+    else:
+        score += 0.5
+        findings.append({"type": "info", "message": "No GPA or honors found — include GPA if 3.0+ or list academic honors"})
 
     return round(min(score, max_score), 1), max_score, findings
 
@@ -769,61 +976,6 @@ def check_keyword_optimization(text_lower):
     return round(min(score, max_score), 1), max_score, findings
 
 
-def check_experience_depth(text, text_lower):
-    findings = []
-    score = 0
-    max_score = 7
-
-    year_mentions = re.findall(r"\b(20\d{2}|19\d{2})\b", text)
-    unique_years = sorted(set(year_mentions))
-
-    if len(unique_years) >= 4:
-        span = int(unique_years[-1]) - int(unique_years[0])
-        score += 2
-        findings.append({"type": "pass", "message": f"Career timeline spans {span} years ({unique_years[0]}–{unique_years[-1]}) — well-documented history"})
-    elif len(unique_years) >= 2:
-        score += 1.5
-        findings.append({"type": "pass", "message": f"Career dates from {unique_years[0]} to {unique_years[-1]}"})
-    elif len(unique_years) == 1:
-        score += 0.5
-        findings.append({"type": "warning", "message": "Only 1 year reference found — add start and end dates for all positions"})
-    else:
-        findings.append({"type": "fail", "message": "No year dates found — employment timeline is critical for ATS and recruiters"})
-
-    job_titles = re.findall(r"\b(?:engineer|developer|designer|manager|analyst|consultant|director|lead|specialist|coordinator|administrator|architect|intern|associate|senior|junior|principal|staff|head of|vp of|vice president)\b", text, re.IGNORECASE)
-    unique_titles = list(set(t.lower() for t in job_titles))
-
-    if len(unique_titles) >= 3:
-        score += 2.5
-        findings.append({"type": "pass", "message": f"Multiple role indicators detected ({len(unique_titles)}): {', '.join(unique_titles[:5])}"})
-    elif len(unique_titles) >= 1:
-        score += 1.5
-        findings.append({"type": "pass", "message": f"Job title keyword(s) found: {', '.join(unique_titles[:3])}"})
-    else:
-        findings.append({"type": "warning", "message": "No clear job title keywords found — make your role titles prominent"})
-
-    company_indicators = len(re.findall(r"\b(?:Inc\.|LLC|Ltd\.|Corp\.|Corporation|Company|Co\.|Technologies|Solutions|Services|Group|Labs|Studio)\b", text, re.IGNORECASE))
-    if company_indicators >= 2:
-        score += 1.5
-        findings.append({"type": "pass", "message": f"Company names clearly identifiable ({company_indicators} company indicators found)"})
-    elif company_indicators >= 1:
-        score += 1
-        findings.append({"type": "pass", "message": "At least one company name detected"})
-    else:
-        score += 0.5
-        findings.append({"type": "info", "message": "Company names not clearly identifiable — include full company names for credibility"})
-
-    education_keywords = re.findall(r"\b(?:bachelor|master|phd|doctorate|mba|b\.s\.|m\.s\.|b\.a\.|m\.a\.|bsc|msc|diploma|degree|gpa|cum laude|magna|summa)\b", text, re.IGNORECASE)
-    if len(education_keywords) >= 2:
-        score += 1
-        findings.append({"type": "pass", "message": f"Education details well-specified ({', '.join(set(k.lower() for k in education_keywords[:4]))})"})
-    elif len(education_keywords) >= 1:
-        score += 0.5
-        findings.append({"type": "pass", "message": "Education level indicated"})
-    else:
-        findings.append({"type": "warning", "message": "No degree specification found — mention degree type (Bachelor's, Master's, etc.)"})
-
-    return round(min(score, max_score), 1), max_score, findings
 
 
 # ---------------------------------------------------------------------------
@@ -891,12 +1043,20 @@ def generate_tips(categories, overall_score, text_lower):
             "impact": "Proper formatting ensures ATS can parse all your information accurately."
         })
 
-    if category_scores.get("Soft Skills", 100) < 60:
+    if category_scores.get("Work Experience", 100) < 70:
         tips.append({
-            "priority": "low",
-            "title": "Balance Hard and Soft Skills",
-            "description": "Add interpersonal skills: leadership, communication, teamwork, project management, problem solving, adaptability.",
-            "impact": "93% of employers say soft skills are essential — show you're well-rounded."
+            "priority": "high",
+            "title": "Strengthen Your Work Experience Section",
+            "description": "Add clear job titles, full company names, and proper date ranges (e.g., 'Jan 2022 – Mar 2024'). Each position needs: Title, Company, Dates, and bullet points.",
+            "impact": "ATS systems build your career timeline from dates and company names — missing info means broken parsing."
+        })
+
+    if category_scores.get("Education", 100) < 60:
+        tips.append({
+            "priority": "medium",
+            "title": "Complete Your Education Details",
+            "description": "Include: degree type (Bachelor's, Master's), field of study, university name, and graduation year. Add GPA if 3.0+ or any academic honors.",
+            "impact": "Many ATS filters require specific degree levels — missing education data can auto-reject your application."
         })
 
     if category_scores.get("ATS Compatibility", 100) < 80:
@@ -937,16 +1097,16 @@ def analyze_resume(text, num_pages, file_ext):
     checks = [
         ("Contact Information", lambda: check_contact_info(text, text_lower)),
         ("Resume Sections", lambda: check_sections(text_lower)),
+        ("Work Experience", lambda: check_work_experience(text, text_lower)),
+        ("Education", lambda: check_education(text, text_lower)),
         ("Formatting & Structure", lambda: check_formatting(text, num_pages)),
         ("ATS Compatibility", lambda: check_ats_compatibility(text, file_ext)),
         ("Action Verbs", lambda: check_action_verbs(text_lower)),
         ("Measurable Results", lambda: check_measurable_results(text, text_lower)),
         ("Hard Skills", lambda: check_hard_skills(text_lower)),
-        ("Soft Skills", lambda: check_soft_skills(text_lower)),
         ("Readability", lambda: check_readability(text)),
         ("Writing Consistency", lambda: check_consistency(text)),
         ("Keyword Optimization", lambda: check_keyword_optimization(text_lower)),
-        ("Experience Depth", lambda: check_experience_depth(text, text_lower)),
     ]
 
     total_score = 0

@@ -1,540 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Primary SEO -->
     <title>Free ATS Resume Checker — Instant ATS Score & Detailed Analysis</title>
     <meta name="description" content="Check your resume's ATS compatibility score instantly for free. Upload your PDF or DOCX resume and get a detailed 12-category analysis with actionable tips to beat applicant tracking systems.">
     <meta name="keywords" content="ATS checker, ATS resume checker, resume checker, ATS score, ATS compatibility, resume scanner, applicant tracking system, resume analysis, free ATS checker, ATS friendly resume, resume optimizer, ATS resume score, resume keyword checker, ATS resume scanner, resume review">
     <meta name="author" content="ATS Resume Checker">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <link rel="canonical" href="{{ request.url_root }}">
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url_root }}">
     <meta property="og:title" content="Free ATS Resume Checker — Instant Score & Tips">
-    <meta property="og:description" content="Upload your resume and get a free ATS compatibility score with 12-category analysis. Find out if your resume will pass applicant tracking systems.">
+    <meta property="og:description" content="Upload your resume and get a free ATS compatibility score with 12-category analysis.">
     <meta property="og:site_name" content="ATS Resume Checker">
-    <meta property="og:locale" content="en_US">
-
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Free ATS Resume Checker — Instant Score & Tips">
     <meta name="twitter:description" content="Upload your resume and get a free ATS compatibility score with 12-category analysis and actionable improvement tips.">
-
-    <!-- Structured Data: WebApplication -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "ATS Resume Checker",
-        "description": "Free online ATS resume checker that analyzes your resume across 12 categories and provides an ATS compatibility score with actionable improvement tips.",
-        "url": "{{ request.url_root }}",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Any",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "featureList": [
-            "ATS compatibility scoring",
-            "12-category resume analysis",
-            "Hard skills and soft skills breakdown",
-            "Action verb analysis",
-            "Keyword optimization check",
-            "Readability scoring",
-            "Measurable results detection",
-            "Personalized improvement tips",
-            "PDF and DOCX support"
-        ]
-    }
-    </script>
-
-    <!-- Structured Data: FAQ -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "What is an ATS resume checker?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "An ATS resume checker analyzes your resume against the criteria used by Applicant Tracking Systems (ATS) to filter candidates. It checks formatting, keywords, sections, and structure to ensure your resume passes automated screening."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How does the ATS score work?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Your ATS score is calculated across 12 categories including contact information, resume sections, formatting, hard skills, soft skills, action verbs, measurable results, readability, ATS compatibility, writing consistency, keyword optimization, and experience depth. Each category contributes to your overall score out of 100."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Is this ATS checker really free?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, this ATS resume checker is 100% free with no hidden costs, sign-ups, or limitations. Upload your PDF or DOCX resume and get instant results."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "What file formats are supported?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The ATS checker supports PDF and DOCX file formats, which are the two most common resume formats accepted by applicant tracking systems."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "What is a good ATS score?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "A score of 80 or above is considered excellent and means your resume is well-optimized for ATS systems. Scores between 60-79 are good but have room for improvement. Below 60 means significant changes are recommended."
-                }
-            }
-        ]
-    }
-    </script>
-
-    <!-- Structured Data: Breadcrumb -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [{
-            "@type": "ListItem",
-            "position": 1,
-            "name": "ATS Resume Checker",
-            "item": "{{ request.url_root }}"
-        }]
-    }
-    </script>
-
-    <!-- Performance -->
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"ATS Resume Checker","description":"Free online ATS resume checker with 12-category analysis.","url":"{{ request.url_root }}","applicationCategory":"BusinessApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is an ATS resume checker?","acceptedAnswer":{"@type":"Answer","text":"An ATS resume checker analyzes your resume against the criteria used by Applicant Tracking Systems to filter candidates."}},{"@type":"Question","name":"Is this ATS checker really free?","acceptedAnswer":{"@type":"Answer","text":"Yes, 100% free with no hidden costs, sign-ups, or limitations."}},{"@type":"Question","name":"What is a good ATS score?","acceptedAnswer":{"@type":"Answer","text":"A score of 80+ is excellent. 60-79 is good. Below 60 means improvements are recommended."}}]}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-        :root {
-            --primary: #635bff;
-            --primary-light: #7c75ff;
-            --success: #3ecf8e;
-            --success-bg: rgba(62,207,142,.12);
-            --warning: #f5a623;
-            --warning-bg: rgba(245,166,35,.12);
-            --danger: #ef4444;
-            --danger-bg: rgba(239,68,68,.12);
-            --info: #38bdf8;
-            --info-bg: rgba(56,189,248,.12);
-            --bg: #0a0a0f;
-            --surface: #111118;
-            --surface-2: #1a1a24;
-            --surface-3: #22222f;
-            --text: #eeeef0;
-            --text-2: #b4b4c0;
-            --text-3: #70707e;
-            --border: #25252f;
-            --border-2: #2f2f3d;
-            --r: 10px;
-            --r-lg: 14px;
+        /* ===== DARK THEME (default) ===== */
+        :root, [data-theme="dark"] {
+            --primary:#635bff; --primary-light:#7c75ff;
+            --success:#3ecf8e; --success-bg:rgba(62,207,142,.12);
+            --warning:#f5a623; --warning-bg:rgba(245,166,35,.12);
+            --danger:#ef4444;  --danger-bg:rgba(239,68,68,.12);
+            --info:#38bdf8;    --info-bg:rgba(56,189,248,.12);
+            --bg:#0a0a0f; --surface:#111118; --surface-2:#1a1a24; --surface-3:#22222f;
+            --text:#eeeef0; --text-2:#b4b4c0; --text-3:#70707e;
+            --border:#25252f; --border-2:#2f2f3d;
+            --shadow:0 1px 3px rgba(0,0,0,.4);
+            --r:10px; --r-lg:14px;
         }
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            height: 100vh;
-            overflow: hidden;
-            font-size: 14px;
-            -webkit-font-smoothing: antialiased;
+        /* ===== LIGHT THEME ===== */
+        [data-theme="light"] {
+            --primary:#5046e5; --primary-light:#6c63ff;
+            --success:#16a34a; --success-bg:rgba(22,163,74,.1);
+            --warning:#d97706; --warning-bg:rgba(217,119,6,.1);
+            --danger:#dc2626;  --danger-bg:rgba(220,38,38,.08);
+            --info:#2563eb;    --info-bg:rgba(37,99,235,.08);
+            --bg:#f5f5f7; --surface:#ffffff; --surface-2:#f0f0f3; --surface-3:#e5e5ea;
+            --text:#1a1a1a; --text-2:#4a4a5a; --text-3:#8a8a9a;
+            --border:#e0e0e6; --border-2:#d0d0d8;
+            --shadow:0 1px 3px rgba(0,0,0,.08);
         }
 
-        /* -------- NAV BAR -------- */
-        .navbar {
-            height: 56px;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 28px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
+        body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;font-size:14px;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+
+        /* NAV */
+        .navbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:fixed;top:0;left:0;right:0;z-index:100;transition:background .3s,border .3s}
+        .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-.3px}
+        .nav-logo{width:28px;height:28px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center}
+        .nav-logo svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2}
+        .nav-right{display:flex;align-items:center;gap:10px}
+        .nav-tag{background:var(--success-bg);color:var(--success);font-size:11px;font-weight:600;padding:2px 8px;border-radius:5px}
+
+        /* Theme toggle */
+        .theme-toggle{width:38px;height:38px;background:var(--surface-2);border:1px solid var(--border);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .3s,border .3s;flex-shrink:0}
+        .theme-toggle:hover{background:var(--surface-3);border-color:var(--border-2)}
+        .theme-toggle svg{width:18px;height:18px;fill:none;stroke:var(--text-2);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke .3s}
+        .theme-toggle .ico-moon{display:block}
+        .theme-toggle .ico-sun{display:none}
+        [data-theme="light"] .theme-toggle .ico-moon{display:none}
+        [data-theme="light"] .theme-toggle .ico-sun{display:block}
+
+        /* LAYOUT */
+        .app{display:flex;flex-direction:column;height:100vh;padding-top:56px}
+
+        .upload-view{display:flex;align-items:center;justify-content:center;flex:1;padding:32px}
+        .upload-view.hidden{display:none}
+        .upload-box{width:100%;max-width:520px;text-align:center}
+        .upload-box h2{font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-.4px}
+        .upload-box .desc{color:var(--text-3);font-size:13.5px;margin-bottom:28px}
+
+        .drop-zone{border:1.5px dashed var(--border-2);border-radius:var(--r-lg);padding:48px 32px;cursor:pointer;transition:all .25s;background:var(--surface)}
+        .drop-zone:hover,.drop-zone.drag-over{border-color:var(--primary);background:var(--surface-2)}
+        .drop-zone input{display:none}
+        .dz-icon{width:52px;height:52px;margin:0 auto 16px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-radius:14px;display:flex;align-items:center;justify-content:center}
+        .dz-icon svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+        .drop-zone h3{font-size:15px;font-weight:600;margin-bottom:4px}
+        .drop-zone p{color:var(--text-3);font-size:13px}
+        .format-tags{display:flex;gap:6px;justify-content:center;margin-top:14px}
+        .format-tags span{font-size:11px;font-weight:600;color:var(--text-3);background:var(--surface-2);border:1px solid var(--border);padding:3px 12px;border-radius:6px}
+
+        .file-row{display:none;align-items:center;gap:10px;margin-top:16px;padding:10px 16px;background:var(--surface-2);border-radius:var(--r);border:1px solid var(--border)}
+        .file-row.visible{display:flex}
+        .file-row .f-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+        .file-row .f-name{flex:1;font-weight:500;font-size:13px;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .file-row .f-remove{background:none;border:none;color:var(--text-3);cursor:pointer;font-size:18px;padding:0 4px;line-height:1}
+        .file-row .f-remove:hover{color:var(--danger)}
+
+        .btn-analyze{display:none;width:100%;margin-top:16px;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+        .btn-analyze.visible{display:block}
+        .btn-analyze:hover{background:var(--primary-light)}
+        .btn-analyze:disabled{opacity:.5;cursor:not-allowed}
+
+        .error-msg{display:none;margin-top:12px;padding:10px 14px;background:var(--danger-bg);border:1px solid rgba(239,68,68,.2);border-radius:var(--r);color:var(--danger);font-size:13px}
+        .error-msg.visible{display:block}
+
+        .loader{display:none;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:16px}
+        .loader.visible{display:flex}
+        .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .loader p{color:var(--text-3);font-size:13px}
+
+        /* RESULTS */
+        .results-view{display:none;flex:1;overflow:hidden}
+        .results-view.visible{display:flex}
+
+        .panel-left{width:340px;min-width:340px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;transition:background .3s,border .3s}
+        .panel-left::-webkit-scrollbar{width:4px}
+        .panel-left::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px}
+
+        .score-section{padding:28px 24px 20px;text-align:center;border-bottom:1px solid var(--border)}
+        .score-ring{position:relative;width:140px;height:140px;margin:0 auto 14px}
+        .score-ring svg{transform:rotate(-90deg);width:140px;height:140px}
+        .score-ring .track{fill:none;stroke:var(--border);stroke-width:8}
+        .score-ring .progress{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1),stroke .4s}
+        .score-ring .score-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .score-ring .score-num{font-size:38px;font-weight:800;line-height:1;letter-spacing:-1px}
+        .score-ring .score-lbl{font-size:11px;color:var(--text-3);margin-top:2px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+
+        .verdict-text{font-size:12.5px;color:var(--text-2);line-height:1.5;margin-bottom:16px;padding:0 8px}
+        .meta-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+        .meta-chip{font-size:11px;font-weight:600;padding:4px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text-2)}
+
+        .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+        .stat-item{background:var(--surface);padding:14px 8px;text-align:center;transition:background .3s}
+        .stat-val{font-size:20px;font-weight:700;margin-bottom:2px}
+        .stat-lbl{font-size:10.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+        .stat-pass .stat-val{color:var(--success)}
+        .stat-warn .stat-val{color:var(--warning)}
+        .stat-fail .stat-val{color:var(--danger)}
+
+        .cat-overview{padding:16px 20px;flex:1}
+        .cat-overview-title{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text-3);font-weight:600;margin-bottom:12px}
+        .cat-bar-item{margin-bottom:10px}
+        .cat-bar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+        .cat-bar-name{font-size:12px;font-weight:500;color:var(--text-2)}
+        .cat-bar-pct{font-size:11px;font-weight:700}
+        .cat-bar-track{height:5px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+        .cat-bar-fill{height:100%;border-radius:3px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+        .btn-new-check{margin:16px 20px 20px;padding:10px;text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);color:var(--text-2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+        .btn-new-check:hover{border-color:var(--primary);color:var(--primary)}
+
+        .panel-right{flex:1;overflow-y:auto;padding:24px 28px;background:var(--bg);transition:background .3s}
+        .panel-right::-webkit-scrollbar{width:5px}
+        .panel-right::-webkit-scrollbar-thumb{background:var(--border-2);border-radius:4px}
+
+        .tab-bar{display:flex;gap:2px;background:var(--surface);border-radius:var(--r);padding:3px;margin-bottom:20px;border:1px solid var(--border)}
+        .tab-btn{flex:1;padding:9px 12px;text-align:center;font-size:12.5px;font-weight:600;color:var(--text-3);background:transparent;border:none;border-radius:7px;cursor:pointer;transition:all .2s;font-family:inherit}
+        .tab-btn:hover{color:var(--text-2)}
+        .tab-btn.active{background:var(--surface-2);color:var(--text)}
+
+        .tab-panel{display:none;animation:fadeIn .3s ease}
+        .tab-panel.active{display:block}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+        .category{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:10px;overflow:hidden;transition:background .3s,border .3s}
+        .cat-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;transition:background .15s;gap:8px}
+        .cat-head:hover{background:var(--surface-2)}
+        .cat-head .left{display:flex;align-items:center;gap:10px;min-width:0}
+        .cat-icon-sm{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+        .cat-head h3{font-size:13px;font-weight:600;white-space:nowrap}
+        .cat-head .score-sm{color:var(--text-3);font-weight:400;font-size:12px;margin-left:6px}
+        .cat-head .right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+
+        .badge{padding:3px 10px;border-radius:5px;font-size:11px;font-weight:600}
+        .badge-excellent{background:var(--success-bg);color:var(--success)}
+        .badge-good{background:var(--info-bg);color:var(--info)}
+        .badge-fair{background:var(--warning-bg);color:var(--warning)}
+        .badge-poor{background:var(--danger-bg);color:var(--danger)}
+
+        .chevron{color:var(--text-3);font-size:10px;transition:transform .25s}
+        .category.open .chevron{transform:rotate(180deg)}
+
+        .cat-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
+        .category.open .cat-body{max-height:800px}
+
+        .findings{padding:0 16px 12px}
+        .finding{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:12.5px;line-height:1.5;border-bottom:1px solid var(--border);color:var(--text-2)}
+        .finding:last-child{border-bottom:none}
+
+        .f-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;margin-top:1px}
+        .finding-pass .f-dot{background:var(--success-bg);color:var(--success)}
+        .finding-fail .f-dot{background:var(--danger-bg);color:var(--danger)}
+        .finding-warning .f-dot{background:var(--warning-bg);color:var(--warning)}
+        .finding-info .f-dot{background:var(--info-bg);color:var(--info)}
+
+        .tip-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px;margin-bottom:10px;transition:background .3s,border .3s}
+        .tip-priority{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 8px;border-radius:4px;margin-bottom:8px}
+        .tip-high{background:var(--danger-bg);color:var(--danger)}
+        .tip-medium{background:var(--warning-bg);color:var(--warning)}
+        .tip-low{background:var(--success-bg);color:var(--success)}
+        .tip-card h4{font-size:14px;font-weight:600;margin-bottom:6px}
+        .tip-card .tip-desc{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-bottom:8px}
+        .tip-card .tip-impact{font-size:11.5px;color:var(--text-3);font-style:italic;padding-top:8px;border-top:1px solid var(--border)}
+
+        @media(max-width:900px){
+            .results-view{flex-direction:column}
+            .panel-left{width:100%;min-width:unset;border-right:none;border-bottom:1px solid var(--border);max-height:320px}
+            .panel-right{padding:16px}
+            body{overflow:auto}
+            .results-view{overflow:visible}
+            .panel-left,.panel-right{overflow:visible}
         }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 15px;
-            letter-spacing: -.3px;
-        }
-
-        .nav-logo {
-            width: 28px;
-            height: 28px;
-            background: var(--primary);
-            border-radius: 7px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-logo svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.2; }
-
-        .nav-tag {
-            background: var(--success-bg);
-            color: var(--success);
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 5px;
-        }
-
-        /* -------- LAYOUT -------- */
-        .app { display: flex; flex-direction: column; height: 100vh; padding-top: 56px; }
-
-        /* Upload view */
-        .upload-view {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1;
-            padding: 32px;
-        }
-
-        .upload-view.hidden { display: none; }
-
-        .upload-box {
-            width: 100%;
-            max-width: 520px;
-            text-align: center;
-        }
-
-        .upload-box h2 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 6px;
-            letter-spacing: -.4px;
-        }
-
-        .upload-box .desc {
-            color: var(--text-3);
-            font-size: 13.5px;
-            margin-bottom: 28px;
-        }
-
-        .drop-zone {
-            border: 1.5px dashed var(--border-2);
-            border-radius: var(--r-lg);
-            padding: 48px 32px;
-            cursor: pointer;
-            transition: all .25s ease;
-            background: var(--surface);
-        }
-
-        .drop-zone:hover, .drop-zone.drag-over {
-            border-color: var(--primary);
-            background: var(--surface-2);
-        }
-
-        .drop-zone input { display: none; }
-
-        .dz-icon {
-            width: 52px; height: 52px; margin: 0 auto 16px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .dz-icon svg { width: 24px; height: 24px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-        .drop-zone h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
-        .drop-zone p { color: var(--text-3); font-size: 13px; }
-
-        .format-tags { display: flex; gap: 6px; justify-content: center; margin-top: 14px; }
-        .format-tags span {
-            font-size: 11px; font-weight: 600; color: var(--text-3);
-            background: var(--surface-2); border: 1px solid var(--border);
-            padding: 3px 12px; border-radius: 6px;
-        }
-
-        .file-row {
-            display: none; align-items: center; gap: 10px;
-            margin-top: 16px; padding: 10px 16px;
-            background: var(--surface-2); border-radius: var(--r);
-            border: 1px solid var(--border);
-        }
-
-        .file-row.visible { display: flex; }
-        .file-row .f-icon { width: 32px; height: 32px; background: var(--danger-bg); color: var(--danger); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
-        .file-row .f-name { flex: 1; font-weight: 500; font-size: 13px; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .file-row .f-remove { background: none; border: none; color: var(--text-3); cursor: pointer; font-size: 18px; padding: 0 4px; line-height: 1; }
-        .file-row .f-remove:hover { color: var(--danger); }
-
-        .btn-analyze {
-            display: none; width: 100%; margin-top: 16px; padding: 13px;
-            background: var(--primary); color: #fff; border: none; border-radius: var(--r);
-            font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: all .2s ease; font-family: inherit;
-        }
-        .btn-analyze.visible { display: block; }
-        .btn-analyze:hover { background: var(--primary-light); }
-        .btn-analyze:disabled { opacity: .5; cursor: not-allowed; }
-
-        .error-msg {
-            display: none; margin-top: 12px; padding: 10px 14px;
-            background: var(--danger-bg); border: 1px solid rgba(239,68,68,.2);
-            border-radius: var(--r); color: var(--danger); font-size: 13px;
-        }
-        .error-msg.visible { display: block; }
-
-        /* Loading */
-        .loader { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; gap: 16px; }
-        .loader.visible { display: flex; }
-        .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin .7s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loader p { color: var(--text-3); font-size: 13px; }
-
-        /* -------- RESULTS DASHBOARD -------- */
-        .results-view { display: none; flex: 1; overflow: hidden; }
-        .results-view.visible { display: flex; }
-
-        /* Left panel */
-        .panel-left {
-            width: 340px;
-            min-width: 340px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        .panel-left::-webkit-scrollbar { width: 4px; }
-        .panel-left::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
-
-        .score-section {
-            padding: 28px 24px 20px;
-            text-align: center;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .score-ring { position: relative; width: 140px; height: 140px; margin: 0 auto 14px; }
-        .score-ring svg { transform: rotate(-90deg); width: 140px; height: 140px; }
-        .score-ring .track { fill: none; stroke: var(--border); stroke-width: 8; }
-        .score-ring .progress { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1), stroke .4s; }
-        .score-ring .score-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .score-ring .score-num { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
-        .score-ring .score-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-
-        .verdict-text { font-size: 12.5px; color: var(--text-2); line-height: 1.5; margin-bottom: 16px; padding: 0 8px; }
-
-        .meta-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-        .meta-chip {
-            font-size: 11px; font-weight: 600; padding: 4px 10px;
-            background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: 6px; color: var(--text-2);
-        }
-
-        /* Stats row */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .stat-item { background: var(--surface); padding: 14px 8px; text-align: center; }
-        .stat-val { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-        .stat-lbl { font-size: 10.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: .5px; font-weight: 500; }
-
-        .stat-pass .stat-val { color: var(--success); }
-        .stat-warn .stat-val { color: var(--warning); }
-        .stat-fail .stat-val { color: var(--danger); }
-
-        /* Category overview bars */
-        .cat-overview { padding: 16px 20px; flex: 1; }
-        .cat-overview-title { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--text-3); font-weight: 600; margin-bottom: 12px; }
-
-        .cat-bar-item { margin-bottom: 10px; }
-        .cat-bar-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .cat-bar-name { font-size: 12px; font-weight: 500; color: var(--text-2); }
-        .cat-bar-pct { font-size: 11px; font-weight: 700; }
-        .cat-bar-track { height: 5px; background: var(--surface-3); border-radius: 3px; overflow: hidden; }
-        .cat-bar-fill { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(.4,0,.2,1); }
-
-        .btn-new-check {
-            margin: 16px 20px 20px; padding: 10px; text-align: center;
-            background: var(--surface-2); border: 1px solid var(--border);
-            border-radius: var(--r); color: var(--text-2); font-size: 13px;
-            font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit;
-        }
-        .btn-new-check:hover { border-color: var(--primary); color: var(--primary); }
-
-        /* Right panel */
-        .panel-right {
-            flex: 1;
-            overflow-y: auto;
-            padding: 24px 28px;
-            background: var(--bg);
-        }
-
-        .panel-right::-webkit-scrollbar { width: 5px; }
-        .panel-right::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 4px; }
-
-        /* Tabs */
-        .tab-bar {
-            display: flex;
-            gap: 2px;
-            background: var(--surface);
-            border-radius: var(--r);
-            padding: 3px;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .tab-btn {
-            flex: 1; padding: 9px 12px; text-align: center;
-            font-size: 12.5px; font-weight: 600; color: var(--text-3);
-            background: transparent; border: none; border-radius: 7px;
-            cursor: pointer; transition: all .2s; font-family: inherit;
-        }
-        .tab-btn:hover { color: var(--text-2); }
-        .tab-btn.active { background: var(--surface-2); color: var(--text); }
-
-        .tab-panel { display: none; animation: fadeIn .3s ease; }
-        .tab-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Category cards */
-        .category {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--r-lg);
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-
-        .cat-head {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 16px; cursor: pointer; transition: background .15s; gap: 8px;
-        }
-        .cat-head:hover { background: var(--surface-2); }
-        .cat-head .left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-
-        .cat-icon-sm {
-            width: 30px; height: 30px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px; flex-shrink: 0;
-        }
-
-        .cat-head h3 { font-size: 13px; font-weight: 600; white-space: nowrap; }
-        .cat-head .score-sm { color: var(--text-3); font-weight: 400; font-size: 12px; margin-left: 6px; }
-
-        .cat-head .right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-
-        .badge {
-            padding: 3px 10px; border-radius: 5px;
-            font-size: 11px; font-weight: 600;
-        }
-        .badge-excellent { background: var(--success-bg); color: var(--success); }
-        .badge-good { background: var(--info-bg); color: var(--info); }
-        .badge-fair { background: var(--warning-bg); color: var(--warning); }
-        .badge-poor { background: var(--danger-bg); color: var(--danger); }
-
-        .chevron {
-            color: var(--text-3); font-size: 10px;
-            transition: transform .25s ease;
-        }
-        .category.open .chevron { transform: rotate(180deg); }
-
-        .cat-body { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
-        .category.open .cat-body { max-height: 800px; }
-
-        .findings { padding: 0 16px 12px; }
-        .finding {
-            display: flex; align-items: flex-start; gap: 8px;
-            padding: 7px 0; font-size: 12.5px; line-height: 1.5;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-2);
-        }
-        .finding:last-child { border-bottom: none; }
-
-        .f-dot {
-            width: 18px; height: 18px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0; font-size: 10px; margin-top: 1px;
-        }
-        .finding-pass .f-dot { background: var(--success-bg); color: var(--success); }
-        .finding-fail .f-dot { background: var(--danger-bg); color: var(--danger); }
-        .finding-warning .f-dot { background: var(--warning-bg); color: var(--warning); }
-        .finding-info .f-dot { background: var(--info-bg); color: var(--info); }
-
-        /* Tips panel */
-        .tip-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--r-lg);
-            padding: 16px 18px;
-            margin-bottom: 10px;
-        }
-
-        .tip-priority {
-            display: inline-block;
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: .6px; padding: 2px 8px; border-radius: 4px;
-            margin-bottom: 8px;
-        }
-        .tip-high { background: var(--danger-bg); color: var(--danger); }
-        .tip-medium { background: var(--warning-bg); color: var(--warning); }
-        .tip-low { background: var(--success-bg); color: var(--success); }
-
-        .tip-card h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-        .tip-card .tip-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.55; margin-bottom: 8px; }
-        .tip-card .tip-impact {
-            font-size: 11.5px; color: var(--text-3); font-style: italic;
-            padding-top: 8px; border-top: 1px solid var(--border);
-        }
-
-        /* Responsive */
-        @media (max-width: 900px) {
-            .results-view { flex-direction: column; }
-            .panel-left {
-                width: 100%; min-width: unset;
-                border-right: none; border-bottom: 1px solid var(--border);
-                max-height: 320px;
-            }
-            .panel-right { padding: 16px; }
-            body { overflow: auto; }
-            .results-view { overflow: visible; }
-            .panel-left, .panel-right { overflow: visible; }
-        }
-
-        @media (max-width: 600px) {
-            .navbar { padding: 0 16px; }
-            .upload-view { padding: 20px; }
-            .drop-zone { padding: 32px 20px; }
-            .panel-left { max-height: none; }
-            .score-ring { width: 110px; height: 110px; }
-            .score-ring svg { width: 110px; height: 110px; }
-            .score-ring .score-num { font-size: 30px; }
+        @media(max-width:600px){
+            .navbar{padding:0 16px}
+            .upload-view{padding:20px}
+            .drop-zone{padding:32px 20px}
+            .panel-left{max-height:none}
+            .score-ring{width:110px;height:110px}
+            .score-ring svg{width:110px;height:110px}
+            .score-ring .score-num{font-size:30px}
         }
     </style>
 </head>
@@ -542,401 +228,190 @@
 
 <nav class="navbar">
     <div class="nav-brand">
-        <div class="nav-logo">
-            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        </div>
+        <div class="nav-logo"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
         ATS Resume Checker
     </div>
-    <div class="nav-tag">100% Free</div>
+    <div class="nav-right">
+        <span class="nav-tag">100% Free</span>
+        <div class="theme-toggle" id="themeToggle" title="Toggle light/dark theme">
+            <svg class="ico-moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+            <svg class="ico-sun" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+    </div>
 </nav>
 
 <div class="app">
-
-    <!-- UPLOAD VIEW -->
     <div class="upload-view" id="uploadView">
         <div class="upload-box">
             <h2>Check Your Resume's ATS Score</h2>
             <p class="desc">Upload your resume and get a detailed compatibility analysis in seconds</p>
-
             <div class="drop-zone" id="dropZone">
                 <input type="file" id="fileInput" accept=".pdf,.docx">
-                <div class="dz-icon">
-                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                </div>
+                <div class="dz-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
                 <h3>Drop your resume here</h3>
                 <p>or click to browse</p>
-                <div class="format-tags">
-                    <span>PDF</span>
-                    <span>DOCX</span>
-                    <span>Max 5 MB</span>
-                </div>
+                <div class="format-tags"><span>PDF</span><span>DOCX</span><span>Max 5 MB</span></div>
             </div>
-
             <div class="file-row" id="fileRow">
                 <div class="f-icon" id="fileExt">PDF</div>
                 <span class="f-name" id="fileName"></span>
                 <button class="f-remove" id="removeFile">&times;</button>
             </div>
-
             <button class="btn-analyze" id="btnAnalyze">Analyze Resume</button>
             <div class="error-msg" id="errorMsg"></div>
         </div>
     </div>
 
-    <!-- LOADING -->
-    <div class="loader" id="loader">
-        <div class="spinner"></div>
-        <p>Analyzing your resume across 12 categories...</p>
-    </div>
+    <div class="loader" id="loader"><div class="spinner"></div><p>Analyzing your resume across 12 categories...</p></div>
 
-    <!-- RESULTS DASHBOARD -->
     <div class="results-view" id="resultsView">
-
-        <!-- Left panel: Score + Stats -->
         <div class="panel-left">
             <div class="score-section">
                 <div class="score-ring">
-                    <svg viewBox="0 0 140 140">
-                        <circle class="track" cx="70" cy="70" r="60"/>
-                        <circle class="progress" id="scoreArc" cx="70" cy="70" r="60"/>
-                    </svg>
-                    <div class="score-inner">
-                        <span class="score-num" id="scoreNum">0</span>
-                        <span class="score-lbl">ATS Score</span>
-                    </div>
+                    <svg viewBox="0 0 140 140"><circle class="track" cx="70" cy="70" r="60"/><circle class="progress" id="scoreArc" cx="70" cy="70" r="60"/></svg>
+                    <div class="score-inner"><span class="score-num" id="scoreNum">0</span><span class="score-lbl">ATS Score</span></div>
                 </div>
                 <p class="verdict-text" id="verdict"></p>
                 <div class="meta-chips" id="metaChips"></div>
             </div>
-
             <div class="stats-row">
-                <div class="stat-item stat-pass">
-                    <div class="stat-val" id="statPass">0</div>
-                    <div class="stat-lbl">Passed</div>
-                </div>
-                <div class="stat-item stat-warn">
-                    <div class="stat-val" id="statWarn">0</div>
-                    <div class="stat-lbl">Warnings</div>
-                </div>
-                <div class="stat-item stat-fail">
-                    <div class="stat-val" id="statFail">0</div>
-                    <div class="stat-lbl">Failed</div>
-                </div>
+                <div class="stat-item stat-pass"><div class="stat-val" id="statPass">0</div><div class="stat-lbl">Passed</div></div>
+                <div class="stat-item stat-warn"><div class="stat-val" id="statWarn">0</div><div class="stat-lbl">Warnings</div></div>
+                <div class="stat-item stat-fail"><div class="stat-val" id="statFail">0</div><div class="stat-lbl">Failed</div></div>
             </div>
-
-            <div class="cat-overview" id="catOverview">
-                <div class="cat-overview-title">Category Breakdown</div>
-            </div>
-
+            <div class="cat-overview" id="catOverview"><div class="cat-overview-title">Category Breakdown</div></div>
             <button class="btn-new-check" id="btnNew">Check Another Resume</button>
         </div>
-
-        <!-- Right panel: Details + Tips -->
         <div class="panel-right">
             <div class="tab-bar">
                 <button class="tab-btn active" data-tab="details">Detailed Analysis</button>
                 <button class="tab-btn" data-tab="tips">Improvement Tips</button>
             </div>
-
             <div class="tab-panel active" id="tab-details"></div>
             <div class="tab-panel" id="tab-tips"></div>
         </div>
     </div>
-
 </div>
 
 <script>
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const fileRow = document.getElementById('fileRow');
-const fileNameEl = document.getElementById('fileName');
-const fileExtEl = document.getElementById('fileExt');
-const removeFile = document.getElementById('removeFile');
-const btnAnalyze = document.getElementById('btnAnalyze');
-const uploadView = document.getElementById('uploadView');
-const loader = document.getElementById('loader');
-const resultsView = document.getElementById('resultsView');
-const errorMsg = document.getElementById('errorMsg');
+/* ===== Theme Toggle ===== */
+(function(){
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+    else if (window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme','light');
+})();
 
-let selectedFile = null;
-
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+document.getElementById('themeToggle').addEventListener('click', () => {
+    const html = document.documentElement;
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
 });
-fileInput.addEventListener('change', () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
 
-function handleFile(file) {
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (!['pdf','docx'].includes(ext)) { showError('Please upload a PDF or DOCX file.'); return; }
-    if (file.size > 5*1024*1024) { showError('File too large. Max 5 MB.'); return; }
-    selectedFile = file;
-    fileExtEl.textContent = ext.toUpperCase();
-    fileExtEl.style.background = ext === 'pdf' ? 'var(--danger-bg)' : 'var(--info-bg)';
-    fileExtEl.style.color = ext === 'pdf' ? 'var(--danger)' : 'var(--info)';
-    fileNameEl.textContent = file.name;
+/* ===== Upload Logic ===== */
+const dropZone=document.getElementById('dropZone'),fileInput=document.getElementById('fileInput'),fileRow=document.getElementById('fileRow'),fileNameEl=document.getElementById('fileName'),fileExtEl=document.getElementById('fileExt'),removeFile=document.getElementById('removeFile'),btnAnalyze=document.getElementById('btnAnalyze'),uploadView=document.getElementById('uploadView'),loader=document.getElementById('loader'),resultsView=document.getElementById('resultsView'),errorMsg=document.getElementById('errorMsg');
+let selectedFile=null;
+
+dropZone.addEventListener('click',()=>fileInput.click());
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('drag-over')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('drag-over');if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0])});
+fileInput.addEventListener('change',()=>{if(fileInput.files.length)handleFile(fileInput.files[0])});
+
+function handleFile(f){
+    const ext=f.name.split('.').pop().toLowerCase();
+    if(!['pdf','docx'].includes(ext)){showError('Please upload a PDF or DOCX file.');return}
+    if(f.size>5*1024*1024){showError('File too large. Max 5 MB.');return}
+    selectedFile=f;
+    fileExtEl.textContent=ext.toUpperCase();
+    fileExtEl.style.background=ext==='pdf'?'var(--danger-bg)':'var(--info-bg)';
+    fileExtEl.style.color=ext==='pdf'?'var(--danger)':'var(--info)';
+    fileNameEl.textContent=f.name;
     fileRow.classList.add('visible');
     btnAnalyze.classList.add('visible');
     hideError();
 }
 
-removeFile.addEventListener('click', () => {
-    selectedFile = null; fileInput.value = '';
-    fileRow.classList.remove('visible');
-    btnAnalyze.classList.remove('visible');
-});
+removeFile.addEventListener('click',()=>{selectedFile=null;fileInput.value='';fileRow.classList.remove('visible');btnAnalyze.classList.remove('visible')});
+function showError(m){errorMsg.textContent=m;errorMsg.classList.add('visible')}
+function hideError(){errorMsg.classList.remove('visible')}
 
-function showError(m) { errorMsg.textContent = m; errorMsg.classList.add('visible'); }
-function hideError() { errorMsg.classList.remove('visible'); }
-
-btnAnalyze.addEventListener('click', async () => {
-    if (!selectedFile) return;
-    hideError();
-    btnAnalyze.disabled = true;
-    uploadView.classList.add('hidden');
-    loader.classList.add('visible');
-    resultsView.classList.remove('visible');
-
-    const form = new FormData();
-    form.append('resume', selectedFile);
-
-    try {
-        const res = await fetch('/api/check', { method: 'POST', body: form });
-        const data = await res.json();
+btnAnalyze.addEventListener('click',async()=>{
+    if(!selectedFile)return;
+    hideError();btnAnalyze.disabled=true;
+    uploadView.classList.add('hidden');loader.classList.add('visible');resultsView.classList.remove('visible');
+    const form=new FormData();form.append('resume',selectedFile);
+    try{
+        const res=await fetch('/api/check',{method:'POST',body:form});
+        const data=await res.json();
         loader.classList.remove('visible');
-
-        if (!res.ok) {
-            showError(data.error || 'Something went wrong.');
-            uploadView.classList.remove('hidden');
-            btnAnalyze.disabled = false;
-            return;
-        }
+        if(!res.ok){showError(data.error||'Something went wrong.');uploadView.classList.remove('hidden');btnAnalyze.disabled=false;return}
         renderResults(data);
-    } catch {
-        loader.classList.remove('visible');
-        uploadView.classList.remove('hidden');
-        showError('Network error. Please try again.');
-    }
-    btnAnalyze.disabled = false;
+    }catch{loader.classList.remove('visible');uploadView.classList.remove('hidden');showError('Network error. Please try again.')}
+    btnAnalyze.disabled=false;
 });
 
 /* Tabs */
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    });
-});
+document.querySelectorAll('.tab-btn').forEach(b=>{b.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');document.getElementById('tab-'+b.dataset.tab).classList.add('active');
+})});
 
-/* Color helper */
-function scoreColor(pct) {
-    if (pct >= 80) return 'var(--success)';
-    if (pct >= 60) return 'var(--info)';
-    if (pct >= 40) return 'var(--warning)';
-    return 'var(--danger)';
-}
+function scoreColor(p){return p>=80?'var(--success)':p>=60?'var(--info)':p>=40?'var(--warning)':'var(--danger)'}
+function badgeFor(p){return p>=80?['badge-excellent','Excellent']:p>=60?['badge-good','Good']:p>=40?['badge-fair','Fair']:['badge-poor','Needs Work']}
 
-function badgeFor(pct) {
-    if (pct >= 80) return ['badge-excellent','Excellent'];
-    if (pct >= 60) return ['badge-good','Good'];
-    if (pct >= 40) return ['badge-fair','Fair'];
-    return ['badge-poor','Needs Work'];
-}
+const CAT_ICONS={'Contact Information':'&#9993;','Resume Sections':'&#9776;','Work Experience':'&#9733;','Education':'&#127891;','Formatting & Structure':'&#9638;','ATS Compatibility':'&#10004;','Action Verbs':'&#9889;','Measurable Results':'&#9650;','Hard Skills':'&#9881;','Readability':'&#9998;','Writing Consistency':'&#8801;','Keyword Optimization':'&#9906;'};
 
-const CAT_ICONS = {
-    'Contact Information':'&#9993;','Resume Sections':'&#9776;','Formatting & Structure':'&#9638;',
-    'ATS Compatibility':'&#10004;','Action Verbs':'&#9889;','Measurable Results':'&#9650;',
-    'Hard Skills':'&#9881;','Soft Skills':'&#9829;','Readability':'&#9998;',
-    'Writing Consistency':'&#8801;','Keyword Optimization':'&#9906;','Experience Depth':'&#9733;'
-};
-
-function renderResults(data) {
+function renderResults(data){
     resultsView.classList.add('visible');
+    const R=60,C=2*Math.PI*R,arc=document.getElementById('scoreArc');
+    arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C;
+    const sc=data.overall_score;
+    const col=sc>=80?'var(--success)':sc>=60?'var(--info)':sc>=40?'var(--warning)':'var(--danger)';
+    arc.style.stroke=col;
+    const sn=document.getElementById('scoreNum');sn.style.color=col;
+    setTimeout(()=>{arc.style.strokeDashoffset=C-(sc/100)*C},80);
+    animateNum(sn,0,sc,1100);
+    document.getElementById('verdict').textContent=data.verdict;
+    document.getElementById('metaChips').innerHTML=`<span class="meta-chip">${data.file_type}</span><span class="meta-chip">${data.word_count} words</span><span class="meta-chip">${data.page_count} page${data.page_count>1?'s':''}</span><span class="meta-chip">${data.categories.length} checks</span>`;
+    const ss=data.summary_stats||{};
+    animateNum(document.getElementById('statPass'),0,ss.passed||0,800);
+    animateNum(document.getElementById('statWarn'),0,ss.warnings||0,800);
+    animateNum(document.getElementById('statFail'),0,ss.failed||0,800);
 
-    /* Score ring */
-    const R = 60, C = 2 * Math.PI * R;
-    const arc = document.getElementById('scoreArc');
-    arc.style.strokeDasharray = C;
-    arc.style.strokeDashoffset = C;
+    const ov=document.getElementById('catOverview');ov.innerHTML='<div class="cat-overview-title">Category Breakdown</div>';
+    data.categories.forEach((cat,i)=>{const c=scoreColor(cat.percentage);const it=document.createElement('div');it.className='cat-bar-item';it.innerHTML=`<div class="cat-bar-top"><span class="cat-bar-name">${cat.name}</span><span class="cat-bar-pct" style="color:${c}">${cat.percentage}%</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:0;background:${c}"></div></div>`;ov.appendChild(it);setTimeout(()=>{it.querySelector('.cat-bar-fill').style.width=cat.percentage+'%'},100+i*60)});
 
-    const sc = data.overall_score;
-    const col = sc >= 80 ? 'var(--success)' : sc >= 60 ? 'var(--info)' : sc >= 40 ? 'var(--warning)' : 'var(--danger)';
-    arc.style.stroke = col;
+    const det=document.getElementById('tab-details');det.innerHTML='';
+    data.categories.forEach(cat=>{const[bc,bt]=badgeFor(cat.percentage);const d=document.createElement('div');d.className='category';d.innerHTML=`<div class="cat-head"><div class="left"><div class="cat-icon-sm" style="background:${scoreColor(cat.percentage)}18;color:${scoreColor(cat.percentage)}">${CAT_ICONS[cat.name]||'&#9632;'}</div><h3>${cat.name}<span class="score-sm">${cat.score}/${cat.max_score}</span></h3></div><div class="right"><span class="badge ${bc}">${bt}</span><span class="chevron">&#9662;</span></div></div><div class="cat-body"><div class="findings">${cat.findings.map(f=>`<div class="finding finding-${f.type}"><div class="f-dot">${f.type==='pass'?'&#10003;':f.type==='fail'?'&#10007;':f.type==='warning'?'!':'i'}</div><span>${f.message}</span></div>`).join('')}</div></div>`;det.appendChild(d);d.querySelector('.cat-head').addEventListener('click',()=>d.classList.toggle('open'))});
 
-    const scoreNum = document.getElementById('scoreNum');
-    scoreNum.style.color = col;
-    setTimeout(() => { arc.style.strokeDashoffset = C - (sc/100)*C; }, 80);
-    animateNum(scoreNum, 0, sc, 1100);
-
-    document.getElementById('verdict').textContent = data.verdict;
-
-    const chips = document.getElementById('metaChips');
-    chips.innerHTML = `<span class="meta-chip">${data.file_type}</span><span class="meta-chip">${data.word_count} words</span><span class="meta-chip">${data.page_count} page${data.page_count>1?'s':''}</span><span class="meta-chip">${data.categories.length} checks</span>`;
-
-    /* Stats */
-    const ss = data.summary_stats || {};
-    animateNum(document.getElementById('statPass'), 0, ss.passed||0, 800);
-    animateNum(document.getElementById('statWarn'), 0, ss.warnings||0, 800);
-    animateNum(document.getElementById('statFail'), 0, ss.failed||0, 800);
-
-    /* Category overview bars */
-    const overview = document.getElementById('catOverview');
-    overview.innerHTML = '<div class="cat-overview-title">Category Breakdown</div>';
-    data.categories.forEach((cat, i) => {
-        const c = scoreColor(cat.percentage);
-        const item = document.createElement('div');
-        item.className = 'cat-bar-item';
-        item.innerHTML = `
-            <div class="cat-bar-top">
-                <span class="cat-bar-name">${cat.name}</span>
-                <span class="cat-bar-pct" style="color:${c}">${cat.percentage}%</span>
-            </div>
-            <div class="cat-bar-track">
-                <div class="cat-bar-fill" style="width:0;background:${c}"></div>
-            </div>`;
-        overview.appendChild(item);
-        setTimeout(() => { item.querySelector('.cat-bar-fill').style.width = cat.percentage + '%'; }, 100 + i*60);
-    });
-
-    /* Details tab */
-    const details = document.getElementById('tab-details');
-    details.innerHTML = '';
-    data.categories.forEach((cat, idx) => {
-        const [bc, bt] = badgeFor(cat.percentage);
-        const d = document.createElement('div');
-        d.className = 'category';
-        d.innerHTML = `
-            <div class="cat-head">
-                <div class="left">
-                    <div class="cat-icon-sm" style="background:${scoreColor(cat.percentage)}18;color:${scoreColor(cat.percentage)}">${CAT_ICONS[cat.name]||'&#9632;'}</div>
-                    <h3>${cat.name}<span class="score-sm">${cat.score}/${cat.max_score}</span></h3>
-                </div>
-                <div class="right">
-                    <span class="badge ${bc}">${bt}</span>
-                    <span class="chevron">&#9662;</span>
-                </div>
-            </div>
-            <div class="cat-body">
-                <div class="findings">
-                    ${cat.findings.map(f => `
-                        <div class="finding finding-${f.type}">
-                            <div class="f-dot">${f.type==='pass'?'&#10003;':f.type==='fail'?'&#10007;':f.type==='warning'?'!':'i'}</div>
-                            <span>${f.message}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`;
-        details.appendChild(d);
-        d.querySelector('.cat-head').addEventListener('click', () => d.classList.toggle('open'));
-    });
-
-    /* Tips tab */
-    const tips = document.getElementById('tab-tips');
-    tips.innerHTML = '';
-    if (data.tips && data.tips.length) {
-        data.tips.forEach(tip => {
-            const t = document.createElement('div');
-            t.className = 'tip-card';
-            t.innerHTML = `
-                <span class="tip-priority tip-${tip.priority}">${tip.priority} priority</span>
-                <h4>${tip.title}</h4>
-                <p class="tip-desc">${tip.description}</p>
-                <p class="tip-impact">${tip.impact}</p>`;
-            tips.appendChild(t);
-        });
-    } else {
-        tips.innerHTML = '<p style="color:var(--text-3);text-align:center;padding:40px">No improvement tips — your resume is well optimized!</p>';
-    }
+    const tips=document.getElementById('tab-tips');tips.innerHTML='';
+    if(data.tips&&data.tips.length){data.tips.forEach(tip=>{const t=document.createElement('div');t.className='tip-card';t.innerHTML=`<span class="tip-priority tip-${tip.priority}">${tip.priority} priority</span><h4>${tip.title}</h4><p class="tip-desc">${tip.description}</p><p class="tip-impact">${tip.impact}</p>`;tips.appendChild(t)})}
+    else{tips.innerHTML='<p style="color:var(--text-3);text-align:center;padding:40px">No improvement tips — your resume is well optimized!</p>'}
 }
 
-function animateNum(el, from, to, dur) {
-    const start = performance.now();
-    (function update(now) {
-        const p = Math.min((now - start) / dur, 1);
-        el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1-p,3)));
-        if (p < 1) requestAnimationFrame(update);
-    })(start);
-}
+function animateNum(el,from,to,dur){const st=performance.now();(function u(n){const p=Math.min((n-st)/dur,1);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(u)})(st)}
 
-document.getElementById('btnNew').addEventListener('click', () => {
-    resultsView.classList.remove('visible');
-    uploadView.classList.remove('hidden');
-    selectedFile = null;
-    fileInput.value = '';
-    fileRow.classList.remove('visible');
-    btnAnalyze.classList.remove('visible');
-    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===0));
-    document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===0));
+document.getElementById('btnNew').addEventListener('click',()=>{
+    resultsView.classList.remove('visible');uploadView.classList.remove('hidden');
+    selectedFile=null;fileInput.value='';fileRow.classList.remove('visible');btnAnalyze.classList.remove('visible');
+    document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+    document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
 });
 </script>
 
-<!-- SEO Content — visible to crawlers, below the fold -->
+<!-- SEO Content -->
 <article style="max-width:800px;margin:0 auto;padding:60px 24px;color:var(--text-2);font-size:14px;line-height:1.8">
     <h2 style="color:var(--text);font-size:24px;margin-bottom:16px">Free ATS Resume Checker — Beat Applicant Tracking Systems</h2>
-    <p>Over <strong>75% of resumes are rejected by ATS</strong> (Applicant Tracking Systems) before a human ever sees them. Our free ATS resume checker helps you understand exactly how your resume performs against automated screening software used by 99% of Fortune 500 companies.</p>
-
+    <p>Over <strong>75% of resumes are rejected by ATS</strong> before a human ever sees them. Our free ATS resume checker analyzes your resume across 12 categories used by real applicant tracking systems.</p>
     <h3 style="color:var(--text);font-size:18px;margin:28px 0 12px">What Does Our ATS Checker Analyze?</h3>
-    <p>Unlike basic resume scanners, our tool performs a <strong>12-category deep analysis</strong> of your resume:</p>
-    <ul style="margin:12px 0 12px 20px">
-        <li><strong>Contact Information</strong> — Verifies email, phone, LinkedIn, GitHub, and location are present and professional</li>
-        <li><strong>Resume Sections</strong> — Checks for essential sections like Experience, Education, Skills, and Summary</li>
-        <li><strong>Formatting & Structure</strong> — Analyzes page count, word count, bullet points, and date formatting</li>
-        <li><strong>ATS Compatibility</strong> — Detects tables, images, special characters, and headers that break ATS parsing</li>
-        <li><strong>Action Verbs</strong> — Evaluates use of strong verbs across 8 categories (Leadership, Technical, Achievement, etc.)</li>
-        <li><strong>Measurable Results</strong> — Finds percentages, dollar amounts, and quantified achievements</li>
-        <li><strong>Hard Skills</strong> — Identifies technical skills across Programming, Cloud, Data/AI, and more</li>
-        <li><strong>Soft Skills</strong> — Checks for leadership, communication, and collaboration keywords</li>
-        <li><strong>Readability</strong> — Measures sentence length, vocabulary complexity, and content density</li>
-        <li><strong>Writing Consistency</strong> — Checks verb tense, pronouns, and abbreviation consistency</li>
-        <li><strong>Keyword Optimization</strong> — Analyzes keyword density and repetition patterns</li>
-        <li><strong>Experience Depth</strong> — Evaluates career timeline, job titles, and education details</li>
-    </ul>
-
-    <h3 style="color:var(--text);font-size:18px;margin:28px 0 12px">How to Use the ATS Resume Checker</h3>
-    <ol style="margin:12px 0 12px 20px">
-        <li><strong>Upload</strong> your resume in PDF or DOCX format (max 5 MB)</li>
-        <li><strong>Get your score</strong> — instant analysis across all 12 categories</li>
-        <li><strong>Review findings</strong> — see exactly what passed, what needs work, and why</li>
-        <li><strong>Follow the tips</strong> — priority-ranked improvement suggestions with impact estimates</li>
-        <li><strong>Re-check</strong> — upload your improved resume to track your progress</li>
-    </ol>
-
-    <h3 style="color:var(--text);font-size:18px;margin:28px 0 12px">What Is a Good ATS Score?</h3>
-    <ul style="margin:12px 0 12px 20px">
-        <li><strong>85–100:</strong> Excellent — your resume is highly optimized for ATS systems</li>
-        <li><strong>70–84:</strong> Good — above average, with room for targeted improvements</li>
-        <li><strong>55–69:</strong> Decent — needs work in several key areas</li>
-        <li><strong>40–54:</strong> Below Average — multiple critical improvements needed</li>
-        <li><strong>Below 40:</strong> Needs Significant Work — likely to be filtered out by most ATS</li>
-    </ul>
-
-    <h3 style="color:var(--text);font-size:18px;margin:28px 0 12px">Why Is ATS Optimization Important?</h3>
-    <p>Applicant Tracking Systems like <strong>Workday, Greenhouse, Lever, Taleo, and iCIMS</strong> scan your resume for specific keywords, formatting, and structure before any recruiter sees it. If your resume isn't ATS-friendly, you could be the perfect candidate and still get automatically rejected. Our checker helps you:</p>
-    <ul style="margin:12px 0 12px 20px">
-        <li>Identify missing keywords that ATS systems filter on</li>
-        <li>Fix formatting issues that break automated parsing</li>
-        <li>Strengthen your language with powerful action verbs</li>
-        <li>Quantify achievements to stand out to both ATS and recruiters</li>
-        <li>Ensure all critical resume sections are present and properly labeled</li>
-    </ul>
-
+    <ul style="margin:12px 0 12px 20px"><li><strong>Contact Information</strong> — email, phone, LinkedIn, GitHub, location</li><li><strong>Resume Sections</strong> — Experience, Education, Skills, Summary</li><li><strong>Formatting & Structure</strong> — page count, word count, bullet points, dates</li><li><strong>ATS Compatibility</strong> — tables, images, special characters</li><li><strong>Action Verbs</strong> — 8 categories of strong verbs</li><li><strong>Measurable Results</strong> — percentages, dollar amounts, metrics</li><li><strong>Hard Skills</strong> — Programming, Cloud, Data/AI</li><li><strong>Soft Skills</strong> — leadership, communication, collaboration</li><li><strong>Readability</strong> — sentence length, vocabulary</li><li><strong>Writing Consistency</strong> — verb tense, pronouns</li><li><strong>Keyword Optimization</strong> — density and repetition</li><li><strong>Experience Depth</strong> — timeline, titles, education</li></ul>
     <h3 style="color:var(--text);font-size:18px;margin:28px 0 12px">Frequently Asked Questions</h3>
-    <p><strong>Is this ATS checker really free?</strong><br>Yes, 100% free with no sign-ups, no email required, and no usage limits.</p>
-    <p><strong>Is my resume data safe?</strong><br>Your resume is analyzed in real-time and immediately deleted from our servers. We never store or share your data.</p>
-    <p><strong>What file formats are supported?</strong><br>PDF and DOCX — the two formats most widely accepted by applicant tracking systems.</p>
-    <p><strong>How accurate is the ATS score?</strong><br>Our checker analyzes the same factors that real ATS systems evaluate: keywords, formatting, sections, and structure. While each ATS weighs factors differently, our 12-category analysis gives you a comprehensive view of your resume's compatibility.</p>
-    <p><strong>Can I check multiple resumes?</strong><br>Yes! Check as many resumes as you want. We recommend tailoring your resume to each job description and re-checking each version.</p>
+    <p><strong>Is this ATS checker really free?</strong><br>Yes, 100% free with no sign-ups or limits.</p>
+    <p><strong>Is my resume data safe?</strong><br>Your resume is analyzed instantly and immediately deleted. We never store your data.</p>
+    <p><strong>What is a good ATS score?</strong><br>80+ is excellent, 60-79 is good, below 60 needs improvement.</p>
 </article>
-
-<footer style="text-align:center;padding:20px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border)">
-    ATS Resume Checker &mdash; Free Online Resume Analysis Tool &mdash; No Sign-Up Required
-</footer>
-
+<footer style="text-align:center;padding:20px;color:var(--text-3);font-size:12px;border-top:1px solid var(--border)">ATS Resume Checker &mdash; Free Online Resume Analysis Tool</footer>
 </body>
 </html>

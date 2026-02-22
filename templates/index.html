@@ -58,6 +58,10 @@
         /* NAV */
         .navbar{height:56px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:fixed;top:0;left:0;right:0;z-index:100;transition:background .3s,border .3s}
         .nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;letter-spacing:-.3px}
+        .btn-back{display:none;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:6px 14px 6px 10px;color:var(--text-2);font-size:12.5px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+        .btn-back:hover{background:var(--surface-3);border-color:var(--border-2);color:var(--text)}
+        .btn-back svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+        .btn-back.visible{display:flex}
         .nav-logo{width:28px;height:28px;background:var(--primary);border-radius:7px;display:flex;align-items:center;justify-content:center}
         .nav-logo svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2}
         .nav-right{display:flex;align-items:center;gap:10px}
@@ -217,6 +221,8 @@
             .navbar{padding:0 12px;gap:6px}
             .nav-brand{font-size:14px;gap:8px}
             .nav-tag{font-size:10px;padding:2px 6px}
+            .btn-back{padding:5px 10px 5px 7px;font-size:11.5px}
+            .btn-back svg{width:13px;height:13px}
             .upload-view{padding:16px}
             .upload-box h2{font-size:18px}
             .upload-box .desc{font-size:12.5px}
@@ -274,6 +280,7 @@
         Parsely
     </div>
     <div class="nav-right">
+        <button class="btn-back" id="btnBack"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>New Check</button>
         <span class="nav-tag">100% Free</span>
         <div class="theme-toggle" id="themeToggle" title="Toggle light/dark theme">
             <svg class="ico-moon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
@@ -389,7 +396,7 @@ btnAnalyze.addEventListener('click',async()=>{
         loader.classList.remove('visible');
         if(!res.ok){showError(data.error||'Something went wrong.');uploadView.classList.remove('hidden');btnAnalyze.disabled=false;return}
         renderResults(data);
-    }catch{loader.classList.remove('visible');uploadView.classList.remove('hidden');showError('Network error. Please try again.')}
+    }catch{loader.classList.remove('visible');uploadView.classList.remove('hidden');document.getElementById('btnBack').classList.remove('visible');showError('Network error. Please try again.')}
     btnAnalyze.disabled=false;
 });
 
@@ -405,8 +412,19 @@ function badgeFor(p){return p>=80?['badge-excellent','Excellent']:p>=60?['badge-
 
 const CAT_ICONS={'Contact Information':'&#9993;','Resume Sections':'&#9776;','Work Experience':'&#9733;','Education':'&#127891;','Formatting & Structure':'&#9638;','ATS Compatibility':'&#10004;','Action Verbs':'&#9889;','Measurable Results':'&#9650;','Hard Skills':'&#9881;','Readability':'&#9998;','Writing Consistency':'&#8801;','Keyword Optimization':'&#9906;'};
 
+function goBack(){
+    resultsView.classList.remove('visible');uploadView.classList.remove('hidden');
+    document.getElementById('btnBack').classList.remove('visible');
+    selectedFile=null;fileInput.value='';fileRow.classList.remove('visible');btnAnalyze.classList.remove('visible');
+    document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+    document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+}
+
+document.getElementById('btnBack').addEventListener('click',goBack);
+
 function renderResults(data){
     resultsView.classList.add('visible');
+    document.getElementById('btnBack').classList.add('visible');
     const R=60,C=2*Math.PI*R,arc=document.getElementById('scoreArc');
     arc.style.strokeDasharray=C;arc.style.strokeDashoffset=C;
     const sc=data.overall_score;
@@ -435,12 +453,7 @@ function renderResults(data){
 
 function animateNum(el,from,to,dur){const st=performance.now();(function u(n){const p=Math.min((n-st)/dur,1);el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(u)})(st)}
 
-document.getElementById('btnNew').addEventListener('click',()=>{
-    resultsView.classList.remove('visible');uploadView.classList.remove('hidden');
-    selectedFile=null;fileInput.value='';fileRow.classList.remove('visible');btnAnalyze.classList.remove('visible');
-    document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-    document.querySelectorAll('.tab-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
-});
+document.getElementById('btnNew').addEventListener('click',goBack);
 </script>
 
 <!-- SEO Content -->

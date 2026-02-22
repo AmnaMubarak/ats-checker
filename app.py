@@ -1185,10 +1185,14 @@ def robots():
 
 @app.route("/sitemap.xml")
 def sitemap():
+    from datetime import date
     base = request.url_root.rstrip("/")
+    today = date.today().isoformat()
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    xml += f"  <url><loc>{base}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>\n"
+    xml += f"  <url>\n    <loc>{base}/</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n"
+    xml += f"  <url>\n    <loc>{base}/#how-it-works</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n"
+    xml += f"  <url>\n    <loc>{base}/#faq</loc>\n    <lastmod>{today}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n"
     xml += "</urlset>\n"
     return Response(xml, mimetype="application/xml")
 

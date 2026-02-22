@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ats-checker
+    name: parsely
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt

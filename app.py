@@ -60,23 +60,20 @@ def extract_text(filepath):
 
 SECTION_KEYWORDS = {
     "contact": ["email", "phone", "address", "linkedin", "github", "portfolio", "website", "contact"],
-    "summary": ["summary", "objective", "profile", "about me", "professional summary",
+    "summary": ["summary", "objective", "professional summary",
                  "career objective", "career summary", "professional profile", "executive summary"],
-    "experience": ["experience", "work experience", "employment", "professional experience",
+    "experience": ["work experience", "professional experience",
                     "work history", "employment history", "relevant experience"],
-    "education": ["education", "academic", "qualification", "degree", "university",
-                   "college", "academic background", "educational background"],
+    "education": ["education", "academic background", "educational background"],
     "skills": ["skills", "technical skills", "competencies", "proficiencies",
-               "core competencies", "areas of expertise", "key skills", "skill set"],
-    "certifications": ["certifications", "certificates", "licenses", "accreditations",
-                        "professional certifications", "professional development"],
-    "projects": ["projects", "personal projects", "academic projects", "key projects",
-                  "notable projects", "selected projects"],
-    "awards": ["awards", "honors", "achievements", "recognition", "accomplishments"],
-    "languages": ["languages", "language proficiency", "language skills"],
-    "volunteer": ["volunteer", "volunteering", "community service", "extracurricular"],
-    "references": ["references", "referees"],
-    "publications": ["publications", "research", "papers"],
+               "core competencies", "areas of expertise", "key skills"],
+    "certifications": ["certifications", "certificates", "professional certifications"],
+    "projects": ["projects", "personal projects", "academic projects", "key projects"],
+    "awards": ["awards", "honors", "achievements"],
+    "languages": ["languages", "language proficiency"],
+    "volunteer": ["volunteer", "volunteering", "community service"],
+    "references": ["references"],
+    "publications": ["publications", "research papers"],
 }
 
 ACTION_VERBS_BY_CATEGORY = {
@@ -247,7 +244,6 @@ def check_contact_info(text, text_lower):
         else:
             findings.append({"type": "pass", "message": "LinkedIn profile URL detected"})
     else:
-        score += 0.5
         findings.append({"type": "warning", "message": "No LinkedIn URL — 87% of recruiters use LinkedIn; add your profile link"})
 
     # --- Score: GitHub / Portfolio ---
@@ -261,17 +257,32 @@ def check_contact_info(text, text_lower):
         score += 2
         findings.append({"type": "pass", "message": "Portfolio/Website link detected"})
     else:
-        score += 0.5
         findings.append({"type": "info", "message": "No portfolio/GitHub link — consider adding one to stand out"})
 
     if location_match:
         score += 2
         findings.append({"type": "pass", "message": "Location information detected"})
     else:
-        score += 0.5
         findings.append({"type": "warning", "message": "No location detected — some employers filter by location, add city/state or 'Remote'"})
 
     return round(min(score, max_score), 1), max_score, findings
+
+
+def _find_section_heading(text_lower, keywords):
+    """Check if a keyword appears as a section heading (on its own line or near the start of a line)."""
+    lines = text_lower.split("\n")
+    for line in lines:
+        stripped = line.strip().rstrip(":").strip()
+        if not stripped:
+            continue
+        for kw in keywords:
+            if stripped == kw:
+                return True
+            if stripped.startswith(kw) and len(stripped) < len(kw) + 15:
+                return True
+            if kw in stripped and len(stripped) < 50:
+                return True
+    return False
 
 
 def check_sections(text_lower):
@@ -285,33 +296,28 @@ def check_sections(text_lower):
                     "languages": 0.3, "volunteer": 0.2}
 
     found_sections = []
-    missing_critical = []
-    missing_important = []
 
     for section, pts in critical.items():
-        found = any(kw in text_lower for kw in SECTION_KEYWORDS[section])
+        found = _find_section_heading(text_lower, SECTION_KEYWORDS[section])
         if found:
             score += pts
             found_sections.append(section.title())
             findings.append({"type": "pass", "message": f"'{section.title()}' section found"})
         else:
-            missing_critical.append(section.title())
             findings.append({"type": "fail", "message": f"Missing '{section.title()}' section — this is essential for ATS parsing"})
 
     for section, pts in important.items():
-        found = any(kw in text_lower for kw in SECTION_KEYWORDS[section])
+        found = _find_section_heading(text_lower, SECTION_KEYWORDS[section])
         if found:
             score += pts
             found_sections.append(section.title())
             findings.append({"type": "pass", "message": f"'{section.title()}' section found — helps recruiters quickly assess your profile"})
         else:
-            missing_important.append(section.title())
-            score += 0.3
             findings.append({"type": "warning", "message": f"No '{section.title()}' section — a strong summary can boost recruiter interest by 36%"})
 
     nice_found = 0
     for section, pts in nice_to_have.items():
-        found = any(kw in text_lower for kw in SECTION_KEYWORDS[section])
+        found = _find_section_heading(text_lower, SECTION_KEYWORDS[section])
         if found:
             score += pts
             nice_found += 1
@@ -603,20 +609,18 @@ def check_work_experience(text, text_lower):
         score += 1.5
         findings.append({"type": "pass", "message": f"Career spans {span} years ({unique_years[0]}–{unique_years[-1]})"})
     elif len(unique_years) >= 1:
-        score += 0.5
         findings.append({"type": "info", "message": f"Year(s) found: {', '.join(unique_years)}"})
 
-    # --- Job titles ---
+    # --- Job titles (require compound titles, not generic single words) ---
     title_keywords = re.findall(
         r"\b(?:software engineer|web developer|data scientist|product manager|project manager|"
         r"frontend developer|backend developer|full[- ]stack developer|devops engineer|"
         r"ui/?ux designer|graphic designer|business analyst|data analyst|data engineer|"
         r"machine learning engineer|cloud engineer|qa engineer|systems engineer|"
-        r"marketing manager|sales manager|operations manager|hr manager|"
-        r"cto|ceo|cfo|coo|vp of|vice president|director|team lead|tech lead|"
-        r"engineer|developer|designer|manager|analyst|consultant|coordinator|"
-        r"specialist|administrator|architect|intern|associate|senior|junior|"
-        r"principal|staff|head of)\b",
+        r"marketing manager|sales manager|operations manager|hr manager|account manager|"
+        r"cto|ceo|cfo|coo|vp of\s+\w+|vice president|team lead|tech lead|"
+        r"senior\s+\w+\s+\w+|junior\s+\w+|lead\s+\w+|principal\s+\w+|staff\s+\w+|"
+        r"head of\s+\w+|director of\s+\w+)\b",
         text, re.IGNORECASE)
     unique_titles = list(set(t.lower().strip() for t in title_keywords))
 
@@ -645,16 +649,14 @@ def check_work_experience(text, text_lower):
         score += 1.5
         findings.append({"type": "warning", "message": f"1 company found: {unique_companies[0][:40]} — make sure all employers are clearly listed"})
     else:
-        score += 0.5
-        findings.append({"type": "warning", "message": "No clear company names detected — list full company names (e.g., 'Google LLC', 'Acme Technologies')"})
+        findings.append({"type": "fail", "message": "No clear company names detected — list full company names (e.g., 'Google LLC', 'Acme Technologies')"})
 
     # --- Present / current role ---
-    has_current = bool(re.search(r"\b(?:present|current|ongoing|now)\b", text, re.IGNORECASE))
+    has_current = bool(re.search(r"\b(?:present|current|ongoing)\b", text, re.IGNORECASE))
     if has_current:
         score += 1
         findings.append({"type": "pass", "message": "Current position indicated ('Present') — ATS understands you're currently employed"})
     else:
-        score += 0.5
         findings.append({"type": "info", "message": "No 'Present' date found — if currently employed, mark your latest role as '... – Present'"})
 
     # --- Location ---
@@ -674,10 +676,10 @@ def check_education(text, text_lower):
     # --- Degree type ---
     degree_patterns = {
         "Doctorate/PhD": r"\b(?:ph\.?d\.?|doctorate|doctor of)\b",
-        "Master's": r"\b(?:master(?:'?s)?|m\.?s\.?|m\.?a\.?|msc|mba|m\.?eng\.?|m\.?tech\.?)\b",
-        "Bachelor's": r"\b(?:bachelor(?:'?s)?|b\.?s\.?|b\.?a\.?|bsc|b\.?eng\.?|b\.?tech\.?)\b",
-        "Associate's": r"\b(?:associate(?:'?s)?|a\.?s\.?|a\.?a\.?)\b",
-        "Diploma": r"\b(?:diploma|certificate|certification)\b",
+        "Master's": r"\b(?:master(?:'?s)?\s+(?:of|in|degree)|msc|mba|m\.?eng\.?|m\.?tech\.?)\b",
+        "Bachelor's": r"\b(?:bachelor(?:'?s)?\s+(?:of|in|degree)|bsc|b\.?eng\.?|b\.?tech\.?|b\.?s\.?\s+in)\b",
+        "Associate's": r"\b(?:associate(?:'?s)?\s+(?:of|in|degree))\b",
+        "Diploma": r"\b(?:diploma\s+in|diploma\s+of)\b",
     }
 
     found_degrees = []
@@ -707,7 +709,6 @@ def check_education(text, text_lower):
         score += 2
         findings.append({"type": "pass", "message": f"Field of study: {', '.join(unique_fields[:3])}"})
     else:
-        score += 0.5
         findings.append({"type": "warning", "message": "No field of study detected — include your major (e.g., 'BS in Computer Science')"})
 
     # --- University / institution name ---
@@ -725,7 +726,6 @@ def check_education(text, text_lower):
         score += 2
         findings.append({"type": "pass", "message": f"Institution(s): {', '.join(all_unis[:3])}"})
     else:
-        score += 0.5
         findings.append({"type": "warning", "message": "No institution name detected — include your university or college name"})
 
     # --- Graduation year ---
@@ -753,7 +753,6 @@ def check_education(text, text_lower):
         score += 1
         findings.append({"type": "pass", "message": f"Academic honors: {', '.join(set(h.lower() for h in honors))}"})
     else:
-        score += 0.5
         findings.append({"type": "info", "message": "No GPA or honors found — include GPA if 3.0+ or list academic honors"})
 
     return round(min(score, max_score), 1), max_score, findings
@@ -1094,8 +1093,60 @@ def generate_tips(categories, overall_score, text_lower):
 # Main analysis
 # ---------------------------------------------------------------------------
 
+def _resume_confidence(text, text_lower):
+    """Score 0-1 indicating how likely this document is actually a resume."""
+    signals = 0
+    max_signals = 10
+
+    has_email = bool(re.search(r"[\w.+-]+\s*@\s*[\w-]+\s*\.\s*[\w.]+", text))
+    has_phone = bool(re.search(r"(?:\+?\d[\d\s\-().]{7,}\d)", text))
+    if has_email:
+        signals += 1.5
+    if has_phone:
+        signals += 1.5
+
+    resume_headings = ["work experience", "professional experience", "education",
+                       "skills", "technical skills", "summary", "objective",
+                       "certifications", "projects"]
+    lines = text_lower.split("\n")
+    heading_count = 0
+    for line in lines:
+        stripped = line.strip().rstrip(":").strip()
+        if stripped and len(stripped) < 50:
+            for h in resume_headings:
+                if h in stripped:
+                    heading_count += 1
+                    break
+    if heading_count >= 3:
+        signals += 3
+    elif heading_count >= 2:
+        signals += 2
+    elif heading_count >= 1:
+        signals += 1
+
+    date_ranges = re.findall(
+        r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\.?\s*\d{4}\s*[–\-—to]+",
+        text_lower)
+    year_ranges = re.findall(r"\b20\d{2}\s*[–\-—]\s*(?:20\d{2}|present|current)\b", text_lower)
+    if len(date_ranges) + len(year_ranges) >= 2:
+        signals += 2
+    elif len(date_ranges) + len(year_ranges) >= 1:
+        signals += 1
+
+    bullet_chars = ["•", "●", "▪", "■", "–", "→", "◦", "‣", "►"]
+    bullet_lines = sum(1 for l in lines if any(l.strip().startswith(c) for c in bullet_chars))
+    if bullet_lines >= 5:
+        signals += 2
+    elif bullet_lines >= 2:
+        signals += 1
+
+    return min(signals / max_signals, 1.0)
+
+
 def analyze_resume(text, num_pages, file_ext):
     text_lower = text.lower()
+
+    confidence = _resume_confidence(text, text_lower)
 
     checks = [
         ("Contact Information", lambda: check_contact_info(text, text_lower)),
@@ -1129,9 +1180,32 @@ def analyze_resume(text, num_pages, file_ext):
             "findings": findings,
         })
 
-    overall = round((total_score / total_max) * 100) if total_max else 0
+    raw_overall = round((total_score / total_max) * 100) if total_max else 0
 
-    if overall >= 85:
+    if confidence < 0.3:
+        overall = round(raw_overall * 0.4)
+    elif confidence < 0.5:
+        overall = round(raw_overall * 0.65)
+    elif confidence < 0.7:
+        overall = round(raw_overall * 0.85)
+    else:
+        overall = raw_overall
+
+    if confidence < 0.3:
+        for cat in categories:
+            cat["percentage"] = round(cat["percentage"] * 0.4)
+    elif confidence < 0.5:
+        for cat in categories:
+            cat["percentage"] = round(cat["percentage"] * 0.65)
+    elif confidence < 0.7:
+        for cat in categories:
+            cat["percentage"] = round(cat["percentage"] * 0.85)
+
+    if confidence < 0.3:
+        verdict = "This document doesn't appear to be a resume. Please upload a proper resume with sections like Experience, Education, Skills, and contact information."
+    elif confidence < 0.5:
+        verdict = "This document has very few resume characteristics. Make sure it has proper section headings, contact info, dates, and bullet points."
+    elif overall >= 85:
         verdict = "Excellent! Your resume is highly optimized for ATS systems. Fine-tune with the tips below to reach perfection."
     elif overall >= 70:
         verdict = "Good resume! You're above average, but several improvements could significantly boost your ATS pass rate."
